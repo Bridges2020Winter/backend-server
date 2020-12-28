@@ -27,6 +27,16 @@ router.post("/signup", async (req, res) => {
         });
         //Save model to the databse
         await newUser.save();
+
+        //Initialize document for food diary
+        const foodDiaryInitialize = new diaryModel({
+            email: req.body.email,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+        });
+
+        await foodDiaryInitialize.save();
+
         //Send 200 success response back to client
         res.status(200).send("account created");
     } catch (error) {
@@ -44,9 +54,10 @@ router.post("/signup", async (req, res) => {
 router.post("/signup/information", signupAuthentication, async (req, res) => {
     try {
         //Check if information has already been filled out
-        const query = await userInformationModel.findOne({email: req.body.email})
-        if(query)
-        {
+        const query = await userInformationModel.findOne({
+            email: req.body.email,
+        });
+        if (query) {
             throw "Signup information has already been filled out";
         }
 
@@ -92,15 +103,6 @@ router.post("/signup/information", signupAuthentication, async (req, res) => {
         });
 
         await newUserInformation.save();
-
-        //Initialize document for food diary
-        const foodDiaryInitialize = new diaryModel({
-            email: req.body.email,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-        });
-
-        await foodDiaryInitialize.save();
 
         res.status(200).send("Sucessfully added information");
     } catch (error) {
