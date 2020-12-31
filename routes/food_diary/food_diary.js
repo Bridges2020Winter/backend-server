@@ -30,7 +30,7 @@ router.post("/addFood", authentication, async (req, res) => {
     }
 });
 
-//
+
 /* JSON Format
 {
     "email": "emial@email.email" ,
@@ -40,18 +40,18 @@ router.post("/addFood", authentication, async (req, res) => {
 */
 router.post("/removeFood", authentication, async (req, res) => {
     try {
-        try {
-            var a =await diaryModel.findOne({
-                email: req.body.email
-            });
-            console.log("why?", a)
-            var b = await a.diary.findOne({_id: req.body.id});
-            console.log("yyy?", b);
-        } catch (error) {
-            // food with such id does nto exist
-            console.log("not valid is", error)
-            res.status(600).send("Id is not valid");
-            return 
+
+        var find = await diaryModel.findOne(
+            {
+                email: req.body.email,
+                diary: {
+                    _id: req.body.id
+                }
+            }
+        )
+        if(!find) {
+            // no error here
+            throw "No such eleemnt exist"
         }
 
         await diaryModel.updateOne(
@@ -67,6 +67,7 @@ router.post("/removeFood", authentication, async (req, res) => {
             }
         )
         res.status(200).send("Successfully removed food");
+
     } catch (error) {
         res.status(500).send(error);
     }
