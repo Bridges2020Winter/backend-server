@@ -23,8 +23,8 @@ const foodDiary = new Schema({
             carbohydrates: Number,
             sodium: Number,
             date: {
-                type: Date,
-                default: Date.now,
+                type: String,
+                required: true,
             }
             
         }

@@ -8,8 +8,34 @@ router.get("/", (req, res) => {
     res.send("You've hit the food diary route");
 });
 
+router.post("/queryByDate", authentication, async (req, res) => {
+    try {
+        const query = await diaryModel.find({
+            email: req.body.email,
+            "diary.date": req.body.date,
+        });
+
+        let queryDate = [];
+        for (let i = 0; i < query[0].diary.length; i++) {
+            if (query[0].diary[i].date == req.body.date) {
+                queryDate.push(query[0].diary[i]);
+            }
+        }
+        res.send(queryDate);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 router.post("/addFood", authentication, async (req, res) => {
     try {
+        //Get the date and format it
+        const date = new Date();
+        const dd = String(date.getDate()).padStart(2, "0");
+        const mm = String(date.getMonth() + 1).padStart(2, "0");
+        const yyyy = date.getFullYear();
+        const dateString = mm + "-" + dd + "-" + yyyy;
+
         await diaryModel.updateOne(
             { email: req.body.email },
             {
@@ -20,6 +46,7 @@ router.post("/addFood", authentication, async (req, res) => {
                         fat: req.body.fat,
                         carbohydrates: req.body.carbohydrates,
                         sodium: req.body.sodium,
+                        date: dateString,
                     },
                 },
             }
@@ -30,7 +57,6 @@ router.post("/addFood", authentication, async (req, res) => {
     }
 });
 
-
 /* JSON Format
 {
     "email": "emial@email.email" ,
@@ -40,34 +66,30 @@ router.post("/addFood", authentication, async (req, res) => {
 */
 router.post("/removeFood", authentication, async (req, res) => {
     try {
-
-        var find = await diaryModel.findOne(
-            {
-                email: req.body.email,
-                diary: {
-                    _id: req.body.id
-                }
-            }
-        )
-        if(!find) {
+        var find = await diaryModel.findOne({
+            email: req.body.email,
+            diary: {
+                _id: req.body.id,
+            },
+        });
+        if (!find) {
             // no error here
-            throw "No such eleemnt exist"
+            throw "No such element exist";
         }
 
         await diaryModel.updateOne(
             {
-                email: req.body.email
+                email: req.body.email,
             },
             {
                 $pull: {
                     diary: {
-                        _id: req.body.id
-                    }
-                }
+                        _id: req.body.id,
+                    },
+                },
             }
-        )
+        );
         res.status(200).send("Successfully removed food");
-
     } catch (error) {
         res.status(500).send(error);
     }
