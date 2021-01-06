@@ -72,6 +72,8 @@ Status Codes:
 
 4. __Part 4__ Insert food into food diary
 ```
+POST /foodDiary/addFood
+
 HTTP Body:
 {
     "email": "newton@gmail.com",        //string
@@ -83,6 +85,23 @@ HTTP Body:
     "sodium": 90,                       //double
 }
 ```
+
+5. __Part 5__ Query food diary by date
+```
+POST /foodDiary/queryByDate
+
+~ Will return an array of objects of the specified date if successful
+
+HTTP Body:
+{
+    "email": "newton@gmail.com",        //string
+    "password: "abcdefg123",            //string
+    "date": "01-06-2021"                //string (must be in dd-mm-yyyy format)
+}
+```
+
+
+
 ## Installation
 ```
 ~ npm install
