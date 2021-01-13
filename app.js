@@ -13,9 +13,11 @@ require("./mongoose_connection.js");
 const signupRouter = require('./routes/account/signup.js');
 const institutionDashboardRouter = require('./routes/institution/institution_dashboard');
 const foodDiaryRouter = require('./routes/food_diary/food_diary');
+const logMealRouter = require('./routes/log_meal/logMeal');
 app.use('/accounts', signupRouter);
 app.use('/institutionDashboard', institutionDashboardRouter);
 app.use('/foodDiary', foodDiaryRouter);
+app.use('/logMeal', logMealRouter);
 
 app.get('/', (req, res) => {
     res.send("See https://github.com/Bridge-Application/bridge-backend readme.md for API documentation");
